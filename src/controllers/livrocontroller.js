@@ -23,16 +23,28 @@ class LivroController {
 
     }
 
-
-   static async cadastrarLivro (req, res) {
-    try {
-      const novoLivro = await livro.create(req.body);
-      res.status(201).json({ message: "criado com sucesso", livro: novoLivro });
-    } catch (erro) {
-      res.status(500).json({ message: `${erro.message} - falha ao cadastrar livro` });
+    static async cadastrarLivro (req, res) {
+        const novoLivro = req.body;
+        try {
+        const autorEncontrado = await autor.findById(novoLivro.autor);
+        const livroCompleto = { ...novoLivro, autor: { ...autorEncontrado._doc }};
+        const livroCriado = await livro.create(livroCompleto);
+        res.status(201).json({ message: "criado com sucesso", livro: livroCriado });
+        } catch (erro) {
+        res.status(500).json({ message: `${erro.message} - falha ao cadastrar livro` });
+        }
     }
-  } 
-  
+        
+    //código omitido
+    /*   static async cadastrarLivro (req, res) {
+        try {
+        const novoLivro = await livro.create(req.body);
+        res.status(201).json({ message: "criado com sucesso", livro: novoLivro });
+        } catch (erro) {
+        res.status(500).json({ message: `${erro.message} - falha ao cadastrar livro` });
+        }
+    }  */
+    
       static async atualizarLivro(req, res) {
         try {
             const id = req.params.id
