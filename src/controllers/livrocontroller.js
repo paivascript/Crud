@@ -1,7 +1,19 @@
 import livro from "../models/Livro.js"
-import {autor}  from "../models/Autor.js"
+//import {autor}  from "../models/Autor.js" usava com embredding
 
 class LivroController {
+
+    //usando reference
+     static async listarLivros (req, res) {
+    try {
+        const listaLivros = await livro.find({}).populate("autor").exec();
+        res.status(200).json(listaLivros);
+    } catch (erro) {
+        res.status(500).json({ message: `${erro.message} - falha na requisição` });
+    }
+    };
+
+    /* antiga forma com o embredding
     static async listarLivros(req, res) {
         try {
             const listaLivros = await livro.find({});
@@ -11,7 +23,7 @@ class LivroController {
         }
 
     }
-    
+     */
     static async listarLivroPorId(req, res) {
         try {
             const id = req.params.id
@@ -23,6 +35,17 @@ class LivroController {
 
     }
 
+    //usando o reference
+     static async cadastrarLivro (req, res) {
+        try {
+            const novoLivro = await livro.create(req.body);
+            res.status(201).json({ message: "criado com sucesso", livro: novoLivro });
+        } catch (erro) {
+            res.status(500).json({ message: `${erro.message} - falha ao cadastrar livro` });
+        }
+    }
+    /*usando embredding
+
     static async cadastrarLivro (req, res) {
         const novoLivro = req.body;
         try {
@@ -33,17 +56,9 @@ class LivroController {
         } catch (erro) {
         res.status(500).json({ message: `${erro.message} - falha ao cadastrar livro` });
         }
-    }
+    } */
         
-    //código omitido
-    /*   static async cadastrarLivro (req, res) {
-        try {
-        const novoLivro = await livro.create(req.body);
-        res.status(201).json({ message: "criado com sucesso", livro: novoLivro });
-        } catch (erro) {
-        res.status(500).json({ message: `${erro.message} - falha ao cadastrar livro` });
-        }
-    }  */
+    
     
       static async atualizarLivro(req, res) {
         try {
